@@ -7,8 +7,8 @@ export default function Home() {
   const [display, setDisplay] = useState({ text: "", index: 0 });
   const [started, setStarted] = useState(false);
   let textTick = useRef();
+  const activeWord = useRef();
   let whiteSpaceTick = useRef();
-  let div = useRef();
   const beforeText = useMemo(
     () => text.slice(0, display.index).join(" "),
     [text, display.index]
@@ -44,12 +44,13 @@ export default function Home() {
 
   useEffect(() => {
     setText(sampleText.split(" "));
-    div.current.scrollTo({
-      top: 400,
-      left: 0,
-      behavior: "smooth",
-    });
-  }, []);
+    !started &&
+      activeWord.current?.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+        inline: "center",
+      });
+  }, [started]);
 
   useEffect(() => {
     if (display.index === text.length) {
@@ -59,12 +60,13 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.textContainer} ref={div}>
-        <div style={{ marginBottom: `${100}%` }}></div>
+      <div className={styles.textContainer}>
         <div>{beforeText}</div>
-        <div className={styles.textFocus}>{display.text}</div>
+        <div className={styles.textFocus} ref={activeWord}>
+          {display.text}
+        </div>
         <div>{afterText}</div>
-        <div style={{ marginTop: `${100}%` }}></div>
+        <div className={styles.toWhiteGradient}></div>
       </div>
       <div className={styles.buttons}>
         {display.index !== text.length && !started && (
