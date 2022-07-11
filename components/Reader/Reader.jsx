@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { sampleText } from "/assets/sample text.js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Reader.module.css";
+import { Button, Box } from "@mui/material";
 
 export function Reader() {
   const [text, setText] = useState([]);
   const [display, setDisplay] = useState({ text: "", index: 0 });
   const [started, setStarted] = useState(false);
+  const [wpm, setWpm] = useState(200);
   let textTick = useRef();
+  const textContainer = useRef();
   const activeWord = useRef();
-  let whiteSpaceTick = useRef();
   const beforeText = useMemo(
     () => text.slice(0, display.index).join(" "),
     [text, display.index]
@@ -18,7 +20,10 @@ export function Reader() {
     () => text.slice(display.index + 1, text.length).join(" "),
     [text, display.index]
   );
-  const start = () => {
+
+  const speed = useMemo(() => (60 / wpm) * 1000, [wpm]);
+
+  const start = useCallback(() => {
     setStarted(true);
     textTick.current = setInterval(() => {
       setDisplay((d) => {
@@ -27,12 +32,12 @@ export function Reader() {
           index: d.index++,
         };
       });
-    }, 10);
-  };
+    }, speed);
+  }, [text, speed]);
+
   const stop = () => {
     setStarted(false);
     clearInterval(textTick.current);
-    clearInterval(whiteSpaceTick.current);
   };
 
   const restart = () => {
@@ -42,6 +47,23 @@ export function Reader() {
     });
     start();
   };
+
+  const toggleRead = useCallback(() => {
+    !started && start();
+    started && stop();
+  }, [started, start]);
+
+  useEffect(() => {
+    const inEffectToggleRead = (e) => {
+      e.code === "Space" && e.preventDefault();
+      e.code === "Space" && toggleRead();
+    };
+    document.addEventListener("keydown", inEffectToggleRead);
+
+    return () => {
+      document.removeEventListener("keydown", inEffectToggleRead);
+    };
+  }, [toggleRead]);
 
   useEffect(() => {
     setText(sampleText.split(" "));
@@ -58,32 +80,34 @@ export function Reader() {
       clearInterval(textTick.current);
     }
   }, [display.index, text, started]);
-  return (
-    <div className={styles.textContainer}>
-      <div>{beforeText}</div>
-      <div className={styles.textFocus} ref={activeWord}>
-        {display.text}
-      </div>
-      <div>{afterText}</div>
-      <div className={styles.toWhiteGradient}></div>
 
-      <div className={styles.buttons}>
-        {display.index !== text.length && !started && (
-          <button className={styles.button} onClick={start}>
-            start
-          </button>
-        )}
-        {display.index === text.length && (
-          <button className={styles.button} onClick={restart}>
-            restart
-          </button>
-        )}
-        {started && (
-          <button className={styles.button} onClick={stop}>
-            stop
-          </button>
-        )}
-      </div>
-    </div>
+  return (
+    <Box className={styles.textContainer} ref={textContainer}>
+      <Box>{beforeText}</Box>
+      <Box className={styles.textFocus} ref={activeWord}>
+        {display.text}
+      </Box>
+      <Box>{afterText}</Box>
+      <Box className={styles.toWhiteGradient}></Box>
+      <Box className={styles.controls}>
+        <Box className={styles.buttons}>
+          <Button>{wpm}WPM</Button>
+          {display.index !== text.length && (
+            <Button
+              variant="contained"
+              className={styles.button}
+              onClick={toggleRead}
+            >
+              {!started ? "start" : "stop"}
+            </Button>
+          )}
+          {display.index === text.length && (
+            <Button className={styles.button} onClick={restart}>
+              restart
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 }

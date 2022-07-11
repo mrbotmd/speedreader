@@ -1,12 +1,14 @@
 .textContainer {
-  min-width: 40%;
-  max-width: 768px;
+  /* min-width: 40%;
+  max-width: 768px; */
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: scroll;
   position: relative;
+  padding: 0 25%;
 }
 .toWhiteGradient {
   position: sticky;
@@ -23,9 +25,13 @@
 }
 .controls {
   display: flex;
-  margin-top: 10px;
+  padding: 10px;
   position: sticky;
-  bottom: 0;
+  bottom: 40px;
+  display: flex;
+  justify-content: center;
+  background-color: bisque;
+  border-radius: 10px;
 }
 .button {
   padding: 10px;
