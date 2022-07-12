@@ -8,7 +8,7 @@
   overflow-x: hidden;
   overflow-y: scroll;
   position: relative;
-  padding: 0 25%;
+  padding: 0 35%;
 }
 .toWhiteGradient {
   position: sticky;
@@ -23,16 +23,7 @@
   margin: 0 auto;
   padding: 10px;
 }
-.controls {
-  display: flex;
-  padding: 10px;
-  position: sticky;
-  bottom: 40px;
-  display: flex;
-  justify-content: center;
-  background-color: bisque;
-  border-radius: 10px;
-}
+
 .button {
   padding: 10px;
 }
