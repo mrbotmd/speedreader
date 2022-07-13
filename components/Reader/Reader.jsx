@@ -1,9 +1,15 @@
-import React, { useCallback } from "react";
+import React, { createContext, useCallback } from "react";
 import { sampleText } from "/assets/sample text.js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Reader.module.css";
-import { Button, Box, IconButton } from "@mui/material";
+import { Button, Box, IconButton, Paper } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import SpeedIcon from "@mui/icons-material/Speed";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
 
 export function Reader() {
   const [text] = useState(sampleText.split(" "));
@@ -12,7 +18,7 @@ export function Reader() {
   const [wpm, setWpm] = useState(200);
   const [showMainControls, setShowMainControls] = useState(true);
   const [showWpmControls, setShowWpmControls] = useState(false);
-  const [freeScroll, setFreeScroll] = useState(true);
+  const [scrollLock, setScrollLock] = useState(true);
   const wpmList = useMemo(() => {
     return new Array(1000 / 50).fill(50).map((item, i) => item * (i + 1));
   }, []);
@@ -48,14 +54,6 @@ export function Reader() {
     clearInterval(textTick.current);
   };
 
-  const restart = () => {
-    setDisplay({
-      text: text[0],
-      index: 0,
-    });
-    start();
-  };
-
   const toggleRead = useCallback(() => {
     !started && start();
     started && stop();
@@ -74,19 +72,6 @@ export function Reader() {
     setWpm(newWpm);
     handleWpmControlsClose();
   };
-
-  function throttle(callbackFn, limit) {
-    let wait = false;
-    return function () {
-      if (!wait) {
-        callbackFn.call();
-        wait = true;
-        setTimeout(function () {
-          wait = false;
-        }, limit);
-      }
-    };
-  }
 
   const getPrevWord = useCallback(() => {
     setDisplay((d) => {
@@ -126,9 +111,9 @@ export function Reader() {
     });
   }, []);
 
-  const toggleScrollLock = () => {
-    if (!freeScroll) {
-      setFreeScroll(true);
+  const toggleScrollLock = useCallback(() => {
+    if (!scrollLock) {
+      setScrollLock(true);
       activeWord.current?.scrollIntoView({
         behavior: "auto",
         block: "center",
@@ -137,12 +122,12 @@ export function Reader() {
       textContainer.current.addEventListener("wheel", readOnScroll);
       textContainer.current.addEventListener("scroll", scrollIntoView);
     }
-    if (freeScroll) {
-      setFreeScroll(false);
+    if (scrollLock) {
+      setScrollLock(false);
       textContainer.current.removeEventListener("wheel", readOnScroll);
       textContainer.current.removeEventListener("scroll", scrollIntoView);
     }
-  };
+  }, [readOnScroll, scrollIntoView, scrollLock]);
 
   useEffect(() => {
     textContainer.current.addEventListener("wheel", readOnScroll);
@@ -185,14 +170,16 @@ export function Reader() {
   }, [display.index, text, started]);
 
   return (
-    <Box className={styles.textContainer} ref={textContainer}>
-      <Box>{beforeText}</Box>
-      <Box className={styles.textFocus} ref={activeWord}>
-        {display.text}
+    <Box sx={{ width: "100%", height: "100%" }}>
+      <Box className={styles.textContainer} ref={textContainer}>
+        <Box>{beforeText}</Box>
+        <Box className={styles.textFocus} ref={activeWord}>
+          {display.text}
+        </Box>
+        <Box>{afterText}</Box>
+        <Box className={styles.toWhiteGradient}></Box>
       </Box>
-      <Box>{afterText}</Box>
-      <Box className={styles.toWhiteGradient}></Box>
-      <Box
+      <Paper
         sx={{
           display: "flex",
           position: "sticky",
@@ -200,10 +187,10 @@ export function Reader() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "bisque",
+          backgroundColor: "#fff",
           borderRadius: "10px",
-          height: "100px",
-          m: 0,
+          // height: "100px",
+          m: "0 35%",
           p: 2,
         }}
       >
@@ -242,25 +229,35 @@ export function Reader() {
         )}
         {showMainControls && (
           <Box>
-            <Button onClick={toggleScrollLock}>Free</Button>
             <Button onClick={handleWpmControlsOpen}>{wpm}WPM</Button>
+            <IconButton onClick={getPrevWord} sx={{ color: "text.primary" }}>
+              <ArrowBackIosNewIcon />
+            </IconButton>
             {display.index !== text.length && (
-              <Button
-                variant="contained"
+              <IconButton
+                variant="standard"
                 className={styles.button}
                 onClick={toggleRead}
+                sx={{
+                  color: "primary.contrastText",
+                  backgroundColor: "primary.main",
+                  "&:hover": {
+                    backgroundColor: "primary.light",
+                  },
+                }}
               >
-                {!started ? "start" : "stop"}
-              </Button>
+                {!started ? <PlayArrowIcon /> : <StopIcon />}
+              </IconButton>
             )}
-            {display.index === text.length && (
-              <Button className={styles.button} onClick={restart}>
-                restart
-              </Button>
-            )}
+            <IconButton onClick={getNextWord} sx={{ color: "text.primary" }}>
+              <ArrowForwardIosIcon />
+            </IconButton>
+            <IconButton color="primary" onClick={toggleScrollLock}>
+              {scrollLock ? <SpeedIcon /> : <MenuBookIcon />}
+            </IconButton>
           </Box>
         )}
-      </Box>
+      </Paper>
     </Box>
   );
 }
