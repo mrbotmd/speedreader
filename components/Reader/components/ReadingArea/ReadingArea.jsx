@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useMemo, useRef } from "react";
 
 export function ReadingArea({ activeWord, sx }) {
-  const markedWord = () => {
+  const markedWord = useMemo(() => {
     let letterCount = activeWord.length;
     let letterPosition =
       (letterCount / 2) % 2 === 0
@@ -11,26 +11,38 @@ export function ReadingArea({ activeWord, sx }) {
     let middleLetter = activeWord[letterPosition];
     let before = activeWord.slice(0, letterPosition);
     let after = activeWord.slice(letterPosition + 1, activeWord.length);
-    let markedLetter = <span style={{ color: "red" }}>{middleLetter}</span>;
 
     return (
-      <Typography>
+      <Typography
+        ref={markedWordRef}
+        sx={{
+          fontSize: "2rem",
+          display: "flex",
+        }}
+      >
         {before}
-        {markedLetter}
+        <Box
+          ref={markedLetterRef}
+          component="span"
+          sx={{
+            color: "error.light",
+            display: "inline-block",
+            position: "relative",
+          }}
+        >
+          {middleLetter}
+        </Box>
         {after}
       </Typography>
     );
-  };
+  }, [activeWord]);
   return (
     <Box
       sx={{
-        fontSize: "2rem",
-        margin: "0 auto",
-        padding: "10px",
         ...sx,
       }}
     >
-      {markedWord()}
+      {markedWord}
     </Box>
   );
 }
