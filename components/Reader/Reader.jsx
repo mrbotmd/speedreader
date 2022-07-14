@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { ReaderControls } from "./components/ReaderControls/ReaderControls";
 import { MainText } from "./components/MainText";
+import { ReadingArea } from "./components/ReadingArea";
 
 export function Reader() {
   const [text] = useState(sampleText.split(" "));
@@ -39,14 +40,26 @@ export function Reader() {
   }, [display.index, text, started]);
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
-      <MainText
-        textContainer={textContainer}
-        activeWord={display.text}
-        beforeText={beforeText}
-        afterText={afterText}
-        activeWordRef={activeWord}
-      />
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {started && <ReadingArea activeWord={display.text} />}
+      {!started && (
+        <MainText
+          textContainer={textContainer}
+          activeWord={display.text}
+          beforeText={beforeText}
+          afterText={afterText}
+          activeWordRef={activeWord}
+        />
+      )}
       <ReaderControls
         wpm={[wpm, setWpm]}
         started={[started, setStarted]}

@@ -29,10 +29,6 @@ export function ReaderControls({
   const [display, setDisplay] = displayProp;
 
   const [scrollLock, setScrollLock] = useState(false);
-  console.log(
-    "🚀 ~ file: ReaderControls.jsx ~ line 31 ~ scrollLock",
-    scrollLock
-  );
   const [showMainControls, setShowMainControls] = useState(true);
   const [showWpmControls, setShowWpmControls] = useState(false);
 
@@ -157,15 +153,14 @@ export function ReaderControls({
 
   // Adding listener to Space key to stars/stop reading
   useEffect(() => {
-    const cleanupVar = parentContainer.current;
     const inEffectToggleRead = (e) => {
       e.code === "Space" && e.preventDefault();
       e.code === "Space" && toggleRead();
     };
-    parentContainer.current.addEventListener("keydown", inEffectToggleRead);
+    window.addEventListener("keydown", inEffectToggleRead);
 
     return () => {
-      cleanupVar.removeEventListener("keydown", inEffectToggleRead);
+      window.removeEventListener("keydown", inEffectToggleRead);
     };
   }, [toggleRead, parentContainer]);
 
@@ -181,15 +176,15 @@ export function ReaderControls({
     <Paper
       sx={{
         display: "flex",
-        position: "sticky",
+        position: "absolute",
         bottom: "40px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fff",
         borderRadius: "10px",
-        m: "0 35%",
         p: 2,
+        width: "30%",
       }}
     >
       {showWpmControls && (
