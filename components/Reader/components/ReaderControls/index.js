@@ -1,1 +1,1 @@
-export * from "./ReaderControls";
+export { ReaderControls } from "./ReaderControls";

@@ -1,16 +1,8 @@
-import React, { createContext, useCallback } from "react";
 import { sampleText } from "/assets/sample text.js";
 import { useEffect, useMemo, useRef, useState } from "react";
-import styles from "./Reader.module.css";
-import { Button, Box, IconButton, Paper } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import SpeedIcon from "@mui/icons-material/Speed";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import StopIcon from "@mui/icons-material/Stop";
+import { Box } from "@mui/material";
 import { ReaderControls } from "./components/ReaderControls/ReaderControls";
+import { MainText } from "./components/MainText";
 
 export function Reader() {
   const [text] = useState(sampleText.split(" "));
@@ -48,14 +40,13 @@ export function Reader() {
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      <Box className={styles.textContainer} ref={textContainer}>
-        <Box>{beforeText}</Box>
-        <Box className={styles.textFocus} ref={activeWord}>
-          {display.text}
-        </Box>
-        <Box>{afterText}</Box>
-        <Box className={styles.toWhiteGradient}></Box>
-      </Box>
+      <MainText
+        textContainer={textContainer}
+        activeWord={display.text}
+        beforeText={beforeText}
+        afterText={afterText}
+        activeWordRef={activeWord}
+      />
       <ReaderControls
         wpm={[wpm, setWpm]}
         started={[started, setStarted]}
