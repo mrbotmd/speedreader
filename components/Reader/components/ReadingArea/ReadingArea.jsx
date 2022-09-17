@@ -2,6 +2,24 @@ import { Box, Typography } from "@mui/material";
 import React, { useMemo, useRef } from "react";
 
 export function ReadingArea({ activeWord, sx }) {
+  const wordRef = useRef();
+  const markedLetterRef = useRef();
+
+  function getBoundingClientRect(element) {
+    if (!element) return;
+    var rect = element?.getBoundingClientRect();
+    return {
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      x: rect.x,
+      y: rect.y,
+    };
+  }
+
   const markedWord = useMemo(() => {
     let letterCount = activeWord.length;
     let letterPosition =
@@ -11,27 +29,29 @@ export function ReadingArea({ activeWord, sx }) {
     let middleLetter = activeWord[letterPosition];
     let before = activeWord.slice(0, letterPosition);
     let after = activeWord.slice(letterPosition + 1, activeWord.length);
-
     return (
       <Typography
-        ref={markedWordRef}
+        ref={wordRef}
         sx={{
           fontSize: "2rem",
-          display: "flex",
+          width: "max-content",
+          position: "absolute",
+          top: "50%",
+          left: `${markedOffset}px`,
         }}
       >
         {before}
-        <Box
+        <Typography
           ref={markedLetterRef}
           component="span"
           sx={{
+            fontSize: "2rem",
             color: "error.light",
             display: "inline-block",
-            position: "relative",
           }}
         >
           {middleLetter}
-        </Box>
+        </Typography>
         {after}
       </Typography>
     );
@@ -40,6 +60,10 @@ export function ReadingArea({ activeWord, sx }) {
     <Box
       sx={{
         ...sx,
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        position: "relative",
       }}
     >
       {markedWord}
