@@ -1,0 +1,1 @@
+export { MainText } from "./MainText";
