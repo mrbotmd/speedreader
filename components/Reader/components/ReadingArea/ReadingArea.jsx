@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 export function ReadingArea({ activeWord, sx }) {
   const wordRef = useRef();
@@ -34,10 +34,6 @@ export function ReadingArea({ activeWord, sx }) {
         ref={wordRef}
         sx={{
           fontSize: "2rem",
-          width: "max-content",
-          position: "absolute",
-          top: "50%",
-          left: `${markedOffset}px`,
         }}
       >
         {before}
@@ -56,14 +52,24 @@ export function ReadingArea({ activeWord, sx }) {
       </Typography>
     );
   }, [activeWord]);
+
+  useEffect(() => {
+    if (wordRef.current) {
+      const beforeMarkedDistance =
+        markedLetterRef.current.getBoundingClientRect().left +
+        markedLetterRef.current.getBoundingClientRect().width / 2 -
+        wordRef.current.getBoundingClientRect().left;
+      const docXMiddle = document.body.clientWidth / 2;
+      wordRef.current.style.position = "absolute";
+      wordRef.current.style.top = "50%";
+      wordRef.current.style.left = `${docXMiddle - beforeMarkedDistance}px`;
+    }
+  });
+
   return (
     <Box
       sx={{
         ...sx,
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        position: "relative",
       }}
     >
       {markedWord}
