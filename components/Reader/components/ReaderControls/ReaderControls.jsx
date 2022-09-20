@@ -202,7 +202,7 @@ export function ReaderControls({
         backgroundColor: "#fff",
         borderRadius: "10px",
         p: 2,
-        width: "30%",
+        width: "100%",
       }}
     >
       {showWpmControls && (

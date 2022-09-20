@@ -35,12 +35,13 @@ export function Reader({ textToRead }) {
   return (
     <Box
       sx={{
-        width: "100%",
+        width: "40%",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        position: "relative",
       }}
     >
       {started && <ReadingArea activeWord={display.text} />}
