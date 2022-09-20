@@ -5,22 +5,10 @@ export function ReadingArea({ activeWord, sx }) {
   const wordRef = useRef();
   const markedLetterRef = useRef();
 
-  function getBoundingClientRect(element) {
-    if (!element) return;
-    var rect = element?.getBoundingClientRect();
-    return {
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-      x: rect.x,
-      y: rect.y,
-    };
-  }
-
   const markedWord = useMemo(() => {
+    if (wordRef.current) {
+      wordRef.current.style.visibility = "hidden";
+    }
     let letterCount = activeWord.length;
     let letterPosition =
       (letterCount / 2) % 2 === 0
@@ -34,6 +22,8 @@ export function ReadingArea({ activeWord, sx }) {
         ref={wordRef}
         sx={{
           fontSize: "2rem",
+          position: "absolute",
+          top: "50%",
         }}
       >
         {before}
@@ -59,10 +49,12 @@ export function ReadingArea({ activeWord, sx }) {
         markedLetterRef.current.getBoundingClientRect().left +
         markedLetterRef.current.getBoundingClientRect().width / 2 -
         wordRef.current.getBoundingClientRect().left;
+
       const docXMiddle = document.body.clientWidth / 2;
-      wordRef.current.style.position = "absolute";
-      wordRef.current.style.top = "50%";
-      wordRef.current.style.left = `${docXMiddle - beforeMarkedDistance}px`;
+      const leftPosition = Math.round(docXMiddle - beforeMarkedDistance);
+
+      wordRef.current.style.left = `${leftPosition}px`;
+      wordRef.current.style.visibility = "visible";
     }
   });
 
