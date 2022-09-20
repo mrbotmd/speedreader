@@ -6,6 +6,9 @@ export function ReadingArea({ activeWord, sx }) {
   const markedLetterRef = useRef();
 
   const markedWord = useMemo(() => {
+    if (!activeWord) {
+      return;
+    }
     if (wordRef.current) {
       wordRef.current.style.visibility = "hidden";
     }

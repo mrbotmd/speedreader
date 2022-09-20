@@ -5,8 +5,8 @@ import { ReaderControls } from "./components/ReaderControls/ReaderControls";
 import { MainText } from "./components/MainText";
 import { ReadingArea } from "./components/ReadingArea";
 
-export function Reader() {
-  const [text] = useState(sampleText.split(" "));
+export function Reader({ textToRead }) {
+  const [text] = useState(textToRead.split(" ") || sampleText.split(" "));
   const [display, setDisplay] = useState({ text: text[0], index: 0 });
   const [started, setStarted] = useState(false);
   const [wpm, setWpm] = useState(200);
@@ -31,13 +31,6 @@ export function Reader() {
         inline: "center",
       });
   }, [started]);
-
-  // Stopping reading if last word is read
-  useEffect(() => {
-    if (display.index === text.length) {
-      clearInterval(textTick.current);
-    }
-  }, [display.index, text, started]);
 
   return (
     <Box

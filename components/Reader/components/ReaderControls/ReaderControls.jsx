@@ -14,6 +14,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 export function ReaderControls({
   wpm: wpmProp,
@@ -76,11 +77,20 @@ export function ReaderControls({
     started && stop();
   }, [started, start, stop]);
 
+  const restart = useCallback(() => {
+    setDisplay(() => {
+      return {
+        text: text[0],
+        index: 0,
+      };
+    });
+  }, [text, setDisplay]);
+
   const getPrevWord = useCallback(() => {
     setDisplay((d) => {
       return {
-        text: d.index > 0 && text[d.index - 1],
-        index: d.index > 0 && d.index - 1,
+        text: d.index > 0 ? text[d.index - 1] : text[d.index],
+        index: d.index > 0 ? d.index - 1 : d.index,
       };
     });
   }, [text, setDisplay]);
@@ -88,8 +98,8 @@ export function ReaderControls({
   const getNextWord = useCallback(() => {
     setDisplay((d) => {
       return {
-        text: d.index < text.length && text[d.index + 1],
-        index: d.index < text.length && d.index + 1,
+        text: d.index < text.length ? text[d.index + 1] : text[d.index],
+        index: d.index < text.length ? d.index + 1 : d.index,
       };
     });
   }, [text, setDisplay]);
@@ -163,6 +173,14 @@ export function ReaderControls({
       window.removeEventListener("keydown", inEffectToggleRead);
     };
   }, [toggleRead, parentContainer]);
+
+  // Stopping reading if last word is read
+  useEffect(() => {
+    if (display.index === text.length) {
+      clearInterval(textTickSpeed.current);
+      setStarted(false);
+    }
+  }, [display.index, text, started, setStarted]);
 
   useEffect(() => {
     const cleanupVar = parentContainer.current;
@@ -252,7 +270,7 @@ export function ReaderControls({
             <IconButton
               variant="standard"
               size="large"
-              onClick={toggleRead}
+              onClick={display.index === text.length ? restart : toggleRead}
               sx={{
                 color: "primary.contrastText",
                 backgroundColor: "primary.main",
@@ -261,7 +279,9 @@ export function ReaderControls({
                 },
               }}
             >
-              {!started ? <PlayArrowIcon /> : <StopIcon />}
+              {!started && display.index !== text.length && <PlayArrowIcon />}
+              {started && display.index !== text.length && <StopIcon />}
+              {!started && display.index === text.length && <ReplayIcon />}
             </IconButton>
 
             <IconButton onClick={getNextWord} sx={{ color: "text.primary" }}>
