@@ -10,30 +10,39 @@ export function MainText({
 }) {
   return (
     <Box
-      ref={textContainer}
       sx={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
+        gridArea: "main-text",
+        position: "relative",
         overflowX: "hidden",
         overflowY: "scroll",
-        position: "relative",
-        padding: "0 35%",
       }}
     >
-      <Box>{beforeText}</Box>
       <Box
-        ref={activeWordRef}
+        ref={textContainer}
         sx={{
-          fontSize: "2rem",
-          margin: "0 auto",
-          padding: "10px",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          overflowX: "hidden",
+          overflowY: "scroll",
+          position: "relative",
+          p: 1,
         }}
       >
-        {activeWord}
+        <Box>{beforeText}</Box>
+        <Box
+          ref={activeWordRef}
+          sx={{
+            fontSize: "2rem",
+            margin: "0 auto",
+            padding: "10px",
+          }}
+        >
+          {activeWord}
+        </Box>
+        <Box>{afterText}</Box>
       </Box>
-      <Box>{afterText}</Box>
       <Box
         sx={{
           position: "sticky",

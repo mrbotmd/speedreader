@@ -5,8 +5,8 @@ import { ReaderControls } from "./components/ReaderControls/ReaderControls";
 import { MainText } from "./components/MainText";
 import { ReadingArea } from "./components/ReadingArea";
 
-export function Reader({ textToRead }) {
-  const [text] = useState(textToRead.split(" ") || sampleText.split(" "));
+export function Reader({ textToRead, sx }) {
+  const [text] = useState(sampleText.split(" "));
   const [display, setDisplay] = useState({ text: text[0], index: 0 });
   const [started, setStarted] = useState(false);
   const [wpm, setWpm] = useState(200);
@@ -35,13 +35,18 @@ export function Reader({ textToRead }) {
   return (
     <Box
       sx={{
-        width: "40%",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
+        gridColumnStart: "8",
+        gridColumnEnd: "18",
+        gridRowStart: "1",
+        gridRowEnd: "25",
+        display: "grid",
+        gridTemplateColumns: "1fr",
+        gridTemplateRows: "1fr 80px 20px",
+        gridTemplateAreas: `"main-text"
+        "controls"
+        "space"
+        `,
+        ...sx,
       }}
     >
       {started && <ReadingArea activeWord={display.text} />}

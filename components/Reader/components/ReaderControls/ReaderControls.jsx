@@ -193,27 +193,37 @@ export function ReaderControls({
   return (
     <Paper
       sx={{
-        display: "flex",
-        position: "absolute",
-        bottom: "40px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        gridArea: "controls",
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gridAutoRows: "1fr",
+        height: "100%",
         backgroundColor: "#fff",
         borderRadius: "10px",
+        flexWrap: "nowrap",
+        alignItems: "center",
         p: 2,
-        width: "100%",
+        mb: "20px",
       }}
     >
       {showWpmControls && (
-        <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+        <Box
+          sx={{
+            gridColumnStart: "1",
+            gridColumnEnd: "4",
+            display: "grid",
+            gridTemplateColumns: "repeat(6, 1fr)",
+          }}
+        >
           <Box
             sx={{
+              gridColumnStart: "1",
+              gridColumnEnd: "6",
               overflowX: "scroll",
-              height: "100%",
-              whiteSpace: "nowrap",
+              height: "50px",
               m: 0,
-              // p: "5px",
+              whiteSpace: "nowrap",
+              alignSelf: "center",
             }}
           >
             {wpmList.map((item) => (
@@ -231,7 +241,14 @@ export function ReaderControls({
           </Box>
           <IconButton
             size="small"
-            sx={{ p: 1, mb: 2 }}
+            sx={{
+              p: 1,
+              mb: 2,
+              gridColumnStart: "6",
+              gridColumnEnd: "7",
+              justifySelf: "center",
+              alignSelf: "center",
+            }}
             onClick={handleWpmControlsClose}
           >
             <CloseIcon />
@@ -239,31 +256,31 @@ export function ReaderControls({
         </Box>
       )}
       {showMainControls && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-          }}
-        >
+        <>
           <Box
             sx={{
-              flexBasis: "0",
-              flex: "1 1 0px",
-              display: "flex",
-              justifyContent: "center",
+              gridColumnStart: "1",
+              gridColumnEnd: "2",
+              justifySelf: "center",
+              alignSelf: "center",
             }}
           >
             <Button onClick={handleWpmControlsOpen}>{wpm}WPM</Button>
           </Box>
           <Box
             sx={{
-              flexBasis: "0",
-              flex: "1 1 0px",
-              display: "flex",
-              justifyContent: "center",
+              gridColumnStart: "2",
+              gridColumnEnd: "3",
+              justifySelf: "center",
+              alignSelf: "center",
             }}
           >
-            <IconButton onClick={getPrevWord} sx={{ color: "text.primary" }}>
+            <IconButton
+              onClick={getPrevWord}
+              sx={{
+                color: "text.primary",
+              }}
+            >
               <ArrowBackIosNewIcon />
             </IconButton>
 
@@ -284,23 +301,28 @@ export function ReaderControls({
               {!started && display.index === text.length && <ReplayIcon />}
             </IconButton>
 
-            <IconButton onClick={getNextWord} sx={{ color: "text.primary" }}>
+            <IconButton
+              onClick={getNextWord}
+              sx={{
+                color: "text.primary",
+              }}
+            >
               <ArrowForwardIosIcon />
             </IconButton>
           </Box>
           <Box
             sx={{
-              flexBasis: "0",
-              flex: "1 1 0px",
-              display: "flex",
-              justifyContent: "center",
+              justifySelf: "center",
+              alignSelf: "center",
+              gridColumnStart: "3",
+              gridColumnEnd: "4",
             }}
           >
             <IconButton color="primary" onClick={toggleScrollLock}>
               {scrollLock ? <SpeedIcon /> : <MenuBookIcon />}
             </IconButton>
           </Box>
-        </Box>
+        </>
       )}
     </Paper>
   );

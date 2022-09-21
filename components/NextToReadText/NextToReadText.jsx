@@ -8,7 +8,7 @@ const validationSchema = yup.object({
   text: yup.string("Введите ваш текст").required("Текст не может быть пустым"),
 });
 
-export function NextToReadText({ startReading }) {
+export function NextToReadText({ startReading, sx }) {
   const formik = useFormik({
     initialValues: {
       text: "",
@@ -21,10 +21,8 @@ export function NextToReadText({ startReading }) {
   return (
     <Box
       sx={{
-        width: "60%",
-        height: "40%",
         p: 2,
-        border: "1px solid blue",
+        ...sx,
       }}
     >
       <Box
@@ -38,8 +36,8 @@ export function NextToReadText({ startReading }) {
           fullWidth
           multiline
           autoFocus
-          minRows="12"
-          maxRows="12"
+          minRows="9"
+          maxRows="9"
           id="text"
           name="text"
           label="Текст для быстрого чтения"
