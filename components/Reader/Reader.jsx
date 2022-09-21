@@ -6,7 +6,7 @@ import { MainText } from "./components/MainText";
 import { ReadingArea } from "./components/ReadingArea";
 
 export function Reader({ textToRead, sx }) {
-  const [text] = useState(sampleText.split(" "));
+  const [text] = useState(textToRead.split(" ") || sampleText.split(" "));
   const [display, setDisplay] = useState({ text: text[0], index: 0 });
   const [started, setStarted] = useState(false);
   const [wpm, setWpm] = useState(200);
